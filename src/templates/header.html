@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.css')}}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link active" aria-disabled="true">Home</a>
+                    <a class="nav-link" aria-current="page" href="#">List All Recipes</a>
+                    <a class="nav-link" href="#">Create A Recipe</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% block content%}
+
+    {% endblock %}
+</body>
+
+</html>
