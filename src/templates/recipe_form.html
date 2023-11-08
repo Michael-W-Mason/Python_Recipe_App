@@ -1,0 +1,31 @@
+{% extends 'header.html' %}
+
+{% block content %}
+    <form action="/submit_recipe" method="post" id="recipe_form">
+        <h2>Recipe Name</h2>
+        <input type="text" name="recipe">
+        <h2>Ingredients</h2>
+        <div id="ingredients">
+            <div class="ingredient">
+                <input type="text" name="ingredient[]">
+                <button type="button" onclick="deleteIngredient(this)">Delete</button>
+            </div>
+        </div>
+        <button type="button" class="" onclick="addIngredient()">Add Ingredient</button>
+        <h2>Instructions</h2>
+        <div id="instructions">
+            <div class="instruction">
+                <input type="text" name="instruction[]">
+                <button type="button" onclick="deleteInstruction(this)">Delete</button>
+            </div>
+        </div>
+        <button type="button" class="" onclick="addInstruction()">Add Instruction</button>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <button class="btn btn-primary" type="submit">Create Recipe</button>
+    </form>
+    <script src="{{url_for('static', filename='js/buttonController.js')}}"></script>
+{% endblock %}
