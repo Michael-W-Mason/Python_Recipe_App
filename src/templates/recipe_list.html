@@ -1,0 +1,10 @@
+{% extends 'header.html' %}
+
+{% block content %}
+    <h2>All Recipes</h2>
+    {% for recipe in recipes %}
+        <ul>
+            <li>{{ recipe.name }}</li>
+        </ul>
+    {% endfor %}
+{% endblock %}
