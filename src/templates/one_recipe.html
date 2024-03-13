@@ -1,0 +1,16 @@
+{% extends 'header.html' %}
+
+{% block content %}
+    <h1>{{ recipe.name }}</h1>
+    <ul>
+        {% for ingredient in recipe.ingredients %}
+        <li>{{ ingredient }}</li>
+        {% endfor %}
+    </ul>
+    <br>
+    <ol>
+        {% for instruction in recipe.instructions %}
+        <li>{{ instruction }}</li>
+        {% endfor %}
+    </ol>
+{% endblock %}

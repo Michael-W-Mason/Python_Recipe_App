@@ -5,18 +5,37 @@ from src.models.recipe_model import Recipes, Ingredients, Instructions
 
 @app.route('/')
 def home():
-    return render_template('recipe_form.html')
+    return render_template('home.html')
 
 @app.route('/recipes')
 def recipes():
     all_recipes = []
-    sql_recipes = Recipes()
     for recipe in Recipes.select(Recipes.id, Recipes.name):
         all_recipes.append({
             'id' : recipe.id,
             'name' : recipe.name,
         })
     return render_template('recipe_list.html', recipes=all_recipes)
+
+@app.route('/recipes/<id>')
+def one_recipe(id):
+    query_1 = Recipes().select().where(Recipes.id == id).first()
+    query_2 = Ingredients.select().where(Ingredients.recipe == id).order_by(Ingredients.position)
+    query_3 = Instructions.select().where(Instructions.recipe == id).order_by(Instructions.position)
+    
+    recipe = {}
+    recipe['name'] = query_1.name
+    recipe['ingredients'] = []
+    for i, ele  in enumerate(query_2):
+        recipe['ingredients'].append(ele.ingredient)
+    recipe['instructions'] = []
+    for i,ele in enumerate(query_3):
+        recipe['instructions'].append(ele.instruction)
+    return render_template('one_recipe.html', recipe=recipe)
+
+@app.route('/create_recipe')
+def create_recipe():
+    return render_template('recipe_form.html')
 
 @app.route('/submit_recipe', methods=['POST'])
 def submit_recipe():
