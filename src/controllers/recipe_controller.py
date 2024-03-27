@@ -17,14 +17,32 @@ def recipes():
         })
     return render_template('recipe_list.html', recipes=all_recipes)
 
+@app.route('/recipes/edit/<id>')
+def edit_recipe(id):
+    query_1 = Recipes().select(Recipes.name).where(Recipes.id == id).first()
+    query_2 = Ingredients.select().where(Ingredients.recipe == id).order_by(Ingredients.position)
+    query_3 = Instructions.select().where(Instructions.recipe == id).order_by(Instructions.position)
+
+    recipe = {}
+    recipe['name'] = query_1.name
+    recipe['id'] = id
+    recipe['ingredients'] = []
+    for i, ele  in enumerate(query_2):
+        recipe['ingredients'].append(ele.ingredient)
+    recipe['instructions'] = []
+    for i,ele in enumerate(query_3):
+        recipe['instructions'].append(ele.instruction)
+    return render_template('recipe_form.html', recipe=recipe)
+
 @app.route('/recipes/<id>')
 def one_recipe(id):
-    query_1 = Recipes().select().where(Recipes.id == id).first()
+    query_1 = Recipes().select(Recipes.name).where(Recipes.id == id).first()
     query_2 = Ingredients.select().where(Ingredients.recipe == id).order_by(Ingredients.position)
     query_3 = Instructions.select().where(Instructions.recipe == id).order_by(Instructions.position)
     
     recipe = {}
     recipe['name'] = query_1.name
+    recipe['id'] = id
     recipe['ingredients'] = []
     for i, ele  in enumerate(query_2):
         recipe['ingredients'].append(ele.ingredient)
@@ -35,7 +53,39 @@ def one_recipe(id):
 
 @app.route('/create_recipe')
 def create_recipe():
-    return render_template('recipe_form.html')
+    return render_template('recipe_form.html', recipe={})
+
+@app.route('/submit_recipe/<id>', methods=['POST'])
+def submit_edited_recipe(id):
+    # Kind of janky way to do this. Probably a better way to update rather than delete everything and re-insert rows. 
+    query_1 = Ingredients.delete().where(Ingredients.recipe == id)
+    query_1.execute()
+    query_2 = Instructions.delete().where(Instructions.recipe == id)
+    query_2.execute()
+
+    data = {}
+    data['id'] = id
+    data['name']  = request.form.get('recipe')
+    data['ingredients'] = request.form.getlist('ingredient[]')
+    data['instructions'] = request.form.getlist('instruction[]')
+
+    query_3 = Recipes.update({Recipes.name:data['name']}).where(Recipes.id == id)
+    query_3.execute()
+
+    for i, ele in enumerate(data['ingredients']):
+        ingredient = Ingredients()
+        ingredient.recipe = data['id']
+        ingredient.position = i
+        ingredient.ingredient = ele
+        ingredient.save()
+    for i, ele in enumerate(data['instructions']):
+        instruction = Instructions()
+        instruction.recipe = data['id']
+        instruction.position = i
+        instruction.instruction = ele
+        instruction.save()
+
+    return redirect(f'/recipes/{id}')
 
 @app.route('/submit_recipe', methods=['POST'])
 def submit_recipe():
@@ -60,3 +110,4 @@ def submit_recipe():
         instruction.save()
     
     return redirect('/')
+

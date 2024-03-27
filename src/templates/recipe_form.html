@@ -1,31 +1,58 @@
 {% extends 'header.html' %}
 
 {% block content %}
-    <form action="/submit_recipe" method="post" id="recipe_form">
-        <h2>Recipe Name</h2>
-        <input type="text" name="recipe">
-        <h2>Ingredients</h2>
-        <div id="ingredients">
-            <div class="ingredient">
-                <input type="text" name="ingredient[]">
-                <button type="button" onclick="deleteIngredient(this)">Delete</button>
-            </div>
+{% if 'id' in recipe %}
+<form action="/submit_recipe/{{ recipe.id }}" method="post" id="recipe_form">
+{% else %}
+<form action="/submit_recipe" method="post" id="recipe_form">
+{% endif %}
+    <h2>Recipe Name</h2>
+    {% if 'name' in recipe %}
+    <input type="text" name="recipe" value="{{recipe.name}}">
+    {% else %}
+    <input type="text" name="recipe">
+    {% endif %}
+    <h2>Ingredients</h2>
+    <div id="ingredients">
+        {% if 'ingredients' in recipe %}
+        {% for ingredient in recipe.ingredients %}
+        <div class="ingredient">
+            <input type="text" name="ingredient[]" value="{{ingredient}}">
+            <button type="button" onclick="deleteElement(this)">Delete</button>
         </div>
-        <button type="button" class="" onclick="addIngredient()">Add Ingredient</button>
-        <h2>Instructions</h2>
-        <div id="instructions">
-            <div class="instruction">
-                <input type="text" name="instruction[]">
-                <button type="button" onclick="deleteInstruction(this)">Delete</button>
-            </div>
+        {% endfor %}
+        {% else %}
+        <div class="ingredient">
+            <input type="text" name="ingredient[]">
+            <button type="button" onclick="deleteElement(this)">Delete</button>
         </div>
-        <button type="button" class="" onclick="addInstruction()">Add Instruction</button>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <button class="btn btn-primary" type="submit">Create Recipe</button>
-    </form>
-    <script src="{{url_for('static', filename='js/buttonController.js')}}"></script>
+        {% endif %}
+
+    </div>
+    <button type="button" class="" onclick="addIngredient()">Add Ingredient</button>
+    <h2>Instructions</h2>
+    <div id="instructions">
+        {% if 'instructions' in recipe %}
+        {% for instruction in recipe.instructions %}
+        <div class="instruction">
+            <input type="text" name="instruction[]" value="{{instruction}}">
+            <button type="button" onclick="deleteElement(this)">Delete</button>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="instruction">
+            <input type="text" name="instruction[]">
+            <button type="button" onclick="deleteElement(this)">Delete</button>
+        </div>
+        {% endif %}
+    </div>
+    <button type="button" class="" onclick="addInstruction()">Add Instruction</button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <button class="btn btn-primary" type="submit">Create Recipe</button>
+</form>
+<script src="{{url_for('static', filename='js/buttonController.js')}}"></script>
 {% endblock %}
