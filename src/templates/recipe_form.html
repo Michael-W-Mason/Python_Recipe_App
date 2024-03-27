@@ -52,7 +52,12 @@
     <br>
     <br>
     <br>
+    {% if 'id' in recipe %}
+    <button class="btn btn-primary" type="submit">Submit Changes</button>
+    <a class="btn btn-danger" href="/delete/{{recipe.id}}">Delete Recipe</a>
+    {%else%}
     <button class="btn btn-primary" type="submit">Create Recipe</button>
+    {%endif%}
 </form>
 <script src="{{url_for('static', filename='js/buttonController.js')}}"></script>
 {% endblock %}

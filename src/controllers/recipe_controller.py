@@ -87,6 +87,21 @@ def submit_edited_recipe(id):
 
     return redirect(f'/recipes/{id}')
 
+@app.route('/delete_recipe/<id>')
+def delete_recipe(id):
+    query_1 = Ingredients.delete().where(Ingredients.recipe == id)
+    query_1.execute()
+    query_2 = Instructions.delete().where(Instructions.recipe == id)
+    query_2.execute()
+    query_3 = Recipes.delete().where(Recipes.id == id)
+    query_3.execute()
+    return redirect('/recipes')
+
+@app.route('/delete/<id>')
+def delete_recipe_form(id):
+    recipe = Recipes().select(Recipes.name, Recipes.id).where(Recipes.id == id).first()
+    return render_template('delete_recipe.html', recipe=recipe)
+
 @app.route('/submit_recipe', methods=['POST'])
 def submit_recipe():
     data = {}
