@@ -1,7 +1,12 @@
 from src import app
 from flask import render_template, redirect, request, session
-from src.models.recipe_model import Recipes, Ingredients, Instructions
+from werkzeug.utils import secure_filename
+import os
+from src.models.recipe_model import Recipes, Ingredients, Instructions, Recipe_Image
 
+UPLOAD_FOLDER = './db/images'
+ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def home():
@@ -108,9 +113,25 @@ def submit_recipe():
     data['name']  = request.form.get('recipe')
     data['ingredients'] = request.form.getlist('ingredient[]')
     data['instructions'] = request.form.getlist('instruction[]')
+    
     recipe = Recipes()
     recipe.name = data['name']
     recipe.save()
+
+    if 'recipe_image' not in request.files:
+        return redirect(request.url)
+    file = request.files['recipe_image']
+    if file.filename == '':
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        recipe_image = Recipe_Image()
+        recipe_image.recipe = recipe.id
+        recipe_image.filename = filename
+        recipe_image.save()
+    
+
     for i, ele in enumerate(data['ingredients']):
         ingredient = Ingredients()
         ingredient.recipe = recipe.id
@@ -126,3 +147,6 @@ def submit_recipe():
     
     return redirect('/')
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

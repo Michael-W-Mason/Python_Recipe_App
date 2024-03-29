@@ -4,7 +4,7 @@
 {% if 'id' in recipe %}
 <form action="/submit_recipe/{{ recipe.id }}" method="post" id="recipe_form">
 {% else %}
-<form action="/submit_recipe" method="post" id="recipe_form">
+<form action="/submit_recipe" method="post" id="recipe_form" enctype="multipart/form-data">
 {% endif %}
     <h2>Recipe Name</h2>
     {% if 'name' in recipe %}
@@ -12,6 +12,8 @@
     {% else %}
     <input type="text" name="recipe">
     {% endif %}
+    <h2>Select Image</h2>
+    <input type="file" name="recipe_image">
     <h2>Ingredients</h2>
     <div id="ingredients">
         {% if 'ingredients' in recipe %}

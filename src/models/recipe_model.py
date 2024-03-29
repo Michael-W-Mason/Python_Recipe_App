@@ -27,3 +27,8 @@ class Instructions(BaseModel):
     instruction = CharField()
     created_at = TimestampField(default=datetime.now())
     updated_at = TimestampField(default=datetime.now())
+
+class Recipe_Image(BaseModel):
+    id = PrimaryKeyField()
+    recipe = ForeignKeyField(Recipes, backref='images')
+    filename = CharField(max_length=255)
