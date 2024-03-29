@@ -2,7 +2,7 @@ from src import app
 from flask import render_template, redirect, request, session
 from werkzeug.utils import secure_filename
 import os
-from src.models.recipe_model import Recipes, Ingredients, Instructions, Recipe_Image
+from src.models.recipe_model import Recipes, Ingredients, Instructions, Recipe_Images
 
 UPLOAD_FOLDER = './db/images'
 ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg', 'gif'}
@@ -109,42 +109,39 @@ def delete_recipe_form(id):
 
 @app.route('/submit_recipe', methods=['POST'])
 def submit_recipe():
-    data = {}
-    data['name']  = request.form.get('recipe')
-    data['ingredients'] = request.form.getlist('ingredient[]')
-    data['instructions'] = request.form.getlist('instruction[]')
-    
+    # Todo: Add Recipe Validation
     recipe = Recipes()
-    recipe.name = data['name']
+    recipe.name = request.form.get('recipe_name')
+    recipe.cook_time = request.form.get('recipe_time')
+    recipe.serves = request.form.get('recipe_serves')
+    recipe.desc = request.form.get('recipe_desc')
     recipe.save()
 
-    if 'recipe_image' not in request.files:
-        return redirect(request.url)
+    # Todo: Fix Image Validation
     file = request.files['recipe_image']
-    if file.filename == '':
-        return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        recipe_image = Recipe_Image()
+        recipe_image = Recipe_Images()
         recipe_image.recipe = recipe.id
         recipe_image.filename = filename
         recipe_image.save()
-    
 
-    for i, ele in enumerate(data['ingredients']):
+    # Todo: Add Ingredient Validation
+    for i, ele in enumerate(request.form.getlist('ingredients[]')):
         ingredient = Ingredients()
         ingredient.recipe = recipe.id
         ingredient.position = i
         ingredient.ingredient = ele
         ingredient.save()
-    for i, ele in enumerate(data['instructions']):
+    
+    # Todo: Add Instruction Validation
+    for i, ele in enumerate(request.form.getlist('instructions[]')):
         instruction = Instructions()
         instruction.recipe = recipe.id
         instruction.position = i
         instruction.instruction = ele
         instruction.save()
-    
     return redirect('/')
 
 def allowed_file(filename):

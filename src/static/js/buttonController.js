@@ -27,13 +27,13 @@ function addInput(ele, type){
 
     if (type == 'ingredient'){
         HTMLinput.placeholder = 'Ingredient'
-        HTMLinput.name = 'ingredient[]'
+        HTMLinput.name = 'ingredients[]'
         HTMLAddButton.setAttribute('onclick', 'addInput(this, "instruction")')
 
     }
     if (type == 'instruction'){
         HTMLinput.placeholder = 'Instruction'
-        HTMLinput.name = 'instruction[]'
+        HTMLinput.name = 'instructions[]'
         HTMLAddButton.setAttribute('onclick', 'addInput(this, "ingredient")')
     }
 

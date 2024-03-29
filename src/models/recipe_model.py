@@ -9,6 +9,9 @@ class BaseModel(Model):
 class Recipes(BaseModel):
     id = PrimaryKeyField()
     name = CharField()
+    desc = CharField()
+    cook_time = FloatField()
+    serves = IntegerField()
     created_at = TimestampField(default=datetime.now())
     updated_at = TimestampField(default=datetime.now())
 
@@ -17,18 +20,14 @@ class Ingredients(BaseModel):
     recipe = ForeignKeyField(Recipes, backref='ingredients')
     position = IntegerField()
     ingredient = CharField()
-    created_at = TimestampField(default=datetime.now())
-    updated_at = TimestampField(default=datetime.now())
 
 class Instructions(BaseModel):
     id = PrimaryKeyField()
     recipe = ForeignKeyField(Recipes, backref='instructions')
     position = IntegerField()
     instruction = CharField()
-    created_at = TimestampField(default=datetime.now())
-    updated_at = TimestampField(default=datetime.now())
 
-class Recipe_Image(BaseModel):
+class Recipe_Images(BaseModel):
     id = PrimaryKeyField()
     recipe = ForeignKeyField(Recipes, backref='images')
     filename = CharField(max_length=255)
