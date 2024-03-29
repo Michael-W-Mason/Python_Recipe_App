@@ -1,65 +1,100 @@
-{% extends 'header.html' %}
+{% extends 'default_page_layout.html' %}
 
 {% block content %}
-{% if 'id' in recipe %}
-<form action="/submit_recipe/{{ recipe.id }}" method="post" id="recipe_form">
-{% else %}
-<form action="/submit_recipe" method="post" id="recipe_form" enctype="multipart/form-data">
-{% endif %}
-    <h2>Recipe Name</h2>
-    {% if 'name' in recipe %}
-    <input type="text" name="recipe" value="{{recipe.name}}">
-    {% else %}
-    <input type="text" name="recipe">
-    {% endif %}
-    <h2>Select Image</h2>
-    <input type="file" name="recipe_image">
-    <h2>Ingredients</h2>
-    <div id="ingredients">
-        {% if 'ingredients' in recipe %}
-        {% for ingredient in recipe.ingredients %}
-        <div class="ingredient">
-            <input type="text" name="ingredient[]" value="{{ingredient}}">
-            <button type="button" onclick="deleteElement(this)">Delete</button>
-        </div>
-        {% endfor %}
+<div class="bg-body-tertiary py-2">
+    <div class="py-2 container">
+        <form
+        {% if 'id' in recipe %}
+        action="/submit_recipe/{{recipe.id}}"
         {% else %}
-        <div class="ingredient">
-            <input type="text" name="ingredient[]">
-            <button type="button" onclick="deleteElement(this)">Delete</button>
-        </div>
+        action="/submit_recipe"
         {% endif %}
+        method="post" id="recipe_form" enctype="multipart/form-data">
+            <div class="row">
+                <div class="p-2">
+                    <label for="recipe_name" class="form-label control-lg">Recipe Name</label>
+                    <input type="text" class="form-control control-lg" id="recipe_name" placeholder="Enter Name"
+                    {% if 'id' in recipe %}
+                    value="{{recipe.name}}"
+                    {% endif %}>
+                </div>
+                <div class="p-2">
+                    <label for="recipe_desc" class="form-label control-lg">Recipe Description</label>
+                    <textarea class="form-control control-lg" id="recipe_desc" rows="3">
+                        {% if 'id' in recipe %}
+                        {{recipe.desc}}"
+                        {% endif %}
+                    </textarea>
+                </div>
+                <div class="p-2">
+                    <label for="formFileLg" class="form-label">Recipe Image (Optional)</label>
+                    <input class="form-control form-control-md" id="formFileLg" type="file"
+                    {% if 'id' in recipe %}
+                        {{recipe.filename}}"
+                    {% endif %}
+                    >
+                </div>
+            </div>
+            <div class="row mt-2">
+                <h2 class="p-2">Ingredients</h2>
+                {% if 'ingredients' in recipe %}
+                {% for ingredient in recipe.ingredients %}
+                <div class="p-2 input-group">
+                    <input type="text" class="form-control" placeholder="Ingredient" value="{{ingredient}}">
+                    <button onclick="addInput(this, 'ingredient')" class="btn btn-outline-secondary text-success-emphasis" type="button">Add Below</button>
+                    <button onclick="deleteElement(this)" class="btn btn-outline-secondary text-danger-emphasis" type="button" 
+                    {% if loop.index == 1 %}
+                    disabled
+                    {% endif %}
+                    >Delete</button>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="p-2 input-group">
+                    <input type="text" class="form-control" placeholder="Ingredient">
+                    <button onclick="addInput(this, 'ingredient')" class="btn btn-outline-secondary text-success-emphasis" type="button">Add Below</button>
+                    <button onclick="deleteElement(this)" class="btn btn-outline-secondary text-danger-emphasis" type="button" disabled>Delete</button>
+                {% endif %}
+                
+            </div>
+            </div>
+            <div class="row mt-2">
+                <h2 class="p-2">Instructions</h2>
+                {% if 'instructions' in recipe %}
+                {% for instruction in recipe.instructions %}
+                <div class="p-2 input-group">
+                    <input type="text" class="form-control" placeholder="Instruction">
+                    <button onclick="addInput(this, 'instruction')" class="btn btn-outline-secondary text-success-emphasis" type="button">Add Below</button>
+                    <button onclick="deleteElement(this)" class="btn btn-outline-secondary text-danger-emphasis" type="button"
+                    {% if loop.index == 1 %}
+                    disabled
+                    {% endif %}
+                    >Delete</button>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="p-2 input-group">
+                    <input type="text" class="form-control" placeholder="Instruction">
+                    <button onclick="addInput(this, 'instruction')" class="btn btn-outline-secondary text-success-emphasis" type="button">Add Below</button>
+                    <button onclick="deleteElement(this)" class="btn btn-outline-secondary text-danger-emphasis" type="button" disabled>Delete</button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="mt-2">
+                <button type="submit" class="btn btn-primary">
+                    {% if 'id' in recipe %}
+                    Edit Recipe
+                    {% else %}
+                    Add Recipe
+                    {% endif %}    
+                </button>
+                {% if 'id' in recipe %}
+                <a href="/delete/{{recipe.id}}" class="btn btn-danger">Delete Recipe</a>
+                {% endif %}    
+            </div>
+        </form>
+    </div>
+</div>
 
-    </div>
-    <button type="button" class="" onclick="addIngredient()">Add Ingredient</button>
-    <h2>Instructions</h2>
-    <div id="instructions">
-        {% if 'instructions' in recipe %}
-        {% for instruction in recipe.instructions %}
-        <div class="instruction">
-            <input type="text" name="instruction[]" value="{{instruction}}">
-            <button type="button" onclick="deleteElement(this)">Delete</button>
-        </div>
-        {% endfor %}
-        {% else %}
-        <div class="instruction">
-            <input type="text" name="instruction[]">
-            <button type="button" onclick="deleteElement(this)">Delete</button>
-        </div>
-        {% endif %}
-    </div>
-    <button type="button" class="" onclick="addInstruction()">Add Instruction</button>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    {% if 'id' in recipe %}
-    <button class="btn btn-primary" type="submit">Submit Changes</button>
-    <a class="btn btn-danger" href="/delete/{{recipe.id}}">Delete Recipe</a>
-    {%else%}
-    <button class="btn btn-primary" type="submit">Create Recipe</button>
-    {%endif%}
-</form>
 <script src="{{url_for('static', filename='js/buttonController.js')}}"></script>
 {% endblock %}

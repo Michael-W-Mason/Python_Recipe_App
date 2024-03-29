@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mason-Sanchez Recipes</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.css')}}">
+</head>
+
+<header class="text-bg-dark">
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a href="/" class="navbar-brand d-flex align-items-center">M<sup>2</sup> Dev</a>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main>
+    {% block content%}
+    
+    {% endblock %}
+</main>
+
+<footer class="text-body-secondary py-5">
+    <div class="container">
+        <p class="float-end mb-1">
+            <a href="#">Back to top</a>
+        </p>
+        <p class="mb-1">I take 0 credit for this layout. Almost all components are based directly from bootstrap templates.</p>
+        <p>Please check out <span><a href="https://getbootstrap.com/">Bootstrap</a></span> for more information.</p>
+        <p class="mb-0">Like what you see? <a href="/">Check out my other projects</a>
+    </div>
+</footer>
