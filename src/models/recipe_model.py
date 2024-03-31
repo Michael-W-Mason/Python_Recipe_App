@@ -12,12 +12,13 @@ class Recipes(BaseModel):
     desc = CharField()
     cook_time = FloatField()
     serves = IntegerField()
+    image_filename = CharField(max_length=255, null=True)
     created_at = TimestampField(default=datetime.now())
     updated_at = TimestampField(default=datetime.now())
 
     @staticmethod
     def get_all_recipes():
-        recipes = Recipes.select(Recipes.name, Recipes.id, Recipes.desc, Recipes.cook_time, Recipes.serves)
+        recipes = Recipes.select(Recipes.name, Recipes.id, Recipes.desc, Recipes.cook_time, Recipes.serves, Recipes.image_filename)
         data = []
         for i, ele in enumerate(recipes):
             data.append({
@@ -26,6 +27,7 @@ class Recipes(BaseModel):
                 'desc' : ele.desc,
                 'cook_time' : ele.cook_time,
                 'serves' : ele.serves,
+                'image_filename' : ele.image_filename,
             })
         return data
 
@@ -33,7 +35,6 @@ class Recipes(BaseModel):
     def get_all_information_for_recipe(id):
         # Todo: Make this into smaller queries, feel like there is a better way
         recipe = Recipes.select().where(id == Recipes.id).first()
-        image = Recipe_Images.select(Recipe_Images.filename).where(id == Recipe_Images.recipe).first()
         ingredients = Ingredients.select().where(id == Ingredients.recipe).order_by(Ingredients.position)
         instructions = Instructions.select().where(id == Instructions.recipe).order_by(Instructions.position)
 
@@ -44,15 +45,13 @@ class Recipes(BaseModel):
         data['cook_time'] = recipe.cook_time
         data['serves'] = recipe.serves
         data['created_at'] = recipe.created_at
-        data['image'] = image.filename
+        data['image_filename'] = recipe.image_filename
         data['ingredients'] = []
         data['instructions'] = []
         for i, ele in enumerate(ingredients):
             data['ingredients'].append(ele.ingredient)
         for i, ele in enumerate(instructions):
             data['instructions'].append(ele.instruction)   
-
-        print(data['ingredients'])
         return data
 
 class Ingredients(BaseModel):
@@ -66,8 +65,3 @@ class Instructions(BaseModel):
     recipe = ForeignKeyField(Recipes, backref='instructions')
     position = IntegerField()
     instruction = CharField()
-
-class Recipe_Images(BaseModel):
-    id = PrimaryKeyField()
-    recipe = ForeignKeyField(Recipes, backref='images')
-    filename = CharField(max_length=255)

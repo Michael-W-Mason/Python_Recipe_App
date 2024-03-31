@@ -1,16 +1,21 @@
 from src import app
-from flask import render_template, redirect, request, jsonify
+from flask import render_template, redirect, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 import os
-from src.models.recipe_model import Recipes, Ingredients, Instructions, Recipe_Images
+from src.models.recipe_model import Recipes, Ingredients, Instructions
 
-UPLOAD_FOLDER = './db/images'
+# This config is for the file uploads
 ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg', 'gif'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/cdn/<int:id>/<path:filename>')
+def cdn(id, filename):
+    # Todo: Look into better way for path
+    image_path = f'../db/images/{id}/'
+    return send_from_directory(image_path, filename)
 
 @app.route('/submit_recipe', methods=['POST'])
 def submit_recipe():
@@ -23,15 +28,18 @@ def submit_recipe():
     recipe.save()
 
     # Todo: Fix Image Validation
+    # Todo: Fix Paths
     file = request.files['recipe_image']
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        recipe_image = Recipe_Images()
-        recipe_image.recipe = recipe.id
-        recipe_image.filename = filename
-        recipe_image.save()
-
+        save_path = f'./db/images/{recipe.id}/'
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        file.save(os.path.join(save_path, filename))
+        recipe.image_filename = filename
+        query = recipe.update(image_filename = filename)
+        query.execute()
+    
     # Todo: Add Ingredient Validation
     for i, ele in enumerate(request.form.getlist('ingredients[]')):
         ingredient = Ingredients()
@@ -53,7 +61,6 @@ def submit_recipe():
 @app.route('/recipes/<id>')
 def one_recipe(id):
     recipe = Recipes.get_all_information_for_recipe(id)
-    print(recipe)
     return jsonify(data = recipe)
 
 @app.route('/recipes')

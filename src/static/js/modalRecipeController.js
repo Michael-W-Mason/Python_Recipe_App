@@ -16,12 +16,14 @@ function formatModal(data){
     let modalIngredients = document.getElementById('recipeModalIngredients');
     let modalInstructions = document.getElementById('recipeModalInstructions');
     let modalEditLink = document.getElementById('recipeModalEditLink');
+    let modalImage = document.getElementById('recipeModalImage');
 
     modalTitle.innerText = data["name"];
     modalDesc.innerText = data["desc"];
     modalServes.innerText = `Serves: ${data["serves"]} People`;
     modalTime.innerText = `Total Cook Time (hrs): ${data["cook_time"]}`;
     modalEditLink.setAttribute("href", `/recipes/edit_recipe/${data["id"]}/`);
+    modalImage.setAttribute("src", `/cdn/${data["id"]}/${data['image_filename']}`)
 
     modalIngredients.replaceChildren();
     modalInstructions.replaceChildren();
