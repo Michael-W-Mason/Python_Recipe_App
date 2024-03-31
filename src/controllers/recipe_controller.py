@@ -1,5 +1,5 @@
 from src import app
-from flask import render_template, redirect, request, session
+from flask import render_template, redirect, request, jsonify
 from werkzeug.utils import secure_filename
 import os
 from src.models.recipe_model import Recipes, Ingredients, Instructions, Recipe_Images
@@ -12,15 +12,54 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def home():
     return render_template('home.html')
 
+@app.route('/submit_recipe', methods=['POST'])
+def submit_recipe():
+    # Todo: Add Recipe Validation
+    recipe = Recipes()
+    recipe.name = request.form.get('recipe_name')
+    recipe.cook_time = request.form.get('recipe_time')
+    recipe.serves = request.form.get('recipe_serves')
+    recipe.desc = request.form.get('recipe_desc')
+    recipe.save()
+
+    # Todo: Fix Image Validation
+    file = request.files['recipe_image']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        recipe_image = Recipe_Images()
+        recipe_image.recipe = recipe.id
+        recipe_image.filename = filename
+        recipe_image.save()
+
+    # Todo: Add Ingredient Validation
+    for i, ele in enumerate(request.form.getlist('ingredients[]')):
+        ingredient = Ingredients()
+        ingredient.recipe = recipe.id
+        ingredient.position = i
+        ingredient.ingredient = ele
+        ingredient.save()
+    
+    # Todo: Add Instruction Validation
+    for i, ele in enumerate(request.form.getlist('instructions[]')):
+        instruction = Instructions()
+        instruction.recipe = recipe.id
+        instruction.position = i
+        instruction.instruction = ele
+        instruction.save()
+    
+    return redirect('/')
+
+@app.route('/recipes/<id>')
+def one_recipe(id):
+    recipe = Recipes.get_all_information_for_recipe(id)
+    print(recipe)
+    return jsonify(data = recipe)
+
 @app.route('/recipes')
 def recipes():
-    all_recipes = []
-    for recipe in Recipes.select(Recipes.id, Recipes.name):
-        all_recipes.append({
-            'id' : recipe.id,
-            'name' : recipe.name,
-        })
-    return render_template('recipe_list.html', recipes=all_recipes)
+    recipes = Recipes.get_all_recipes()
+    return render_template('recipe_list.html', recipes=recipes)
 
 @app.route('/recipes/edit/<id>')
 def edit_recipe(id):
@@ -38,23 +77,6 @@ def edit_recipe(id):
     for i,ele in enumerate(query_3):
         recipe['instructions'].append(ele.instruction)
     return render_template('recipe_form.html', recipe=recipe)
-
-@app.route('/recipes/<id>')
-def one_recipe(id):
-    query_1 = Recipes().select(Recipes.name).where(Recipes.id == id).first()
-    query_2 = Ingredients.select().where(Ingredients.recipe == id).order_by(Ingredients.position)
-    query_3 = Instructions.select().where(Instructions.recipe == id).order_by(Instructions.position)
-    
-    recipe = {}
-    recipe['name'] = query_1.name
-    recipe['id'] = id
-    recipe['ingredients'] = []
-    for i, ele  in enumerate(query_2):
-        recipe['ingredients'].append(ele.ingredient)
-    recipe['instructions'] = []
-    for i,ele in enumerate(query_3):
-        recipe['instructions'].append(ele.instruction)
-    return render_template('one_recipe.html', recipe=recipe)
 
 @app.route('/create_recipe')
 def create_recipe():
@@ -106,43 +128,6 @@ def delete_recipe(id):
 def delete_recipe_form(id):
     recipe = Recipes().select(Recipes.name, Recipes.id).where(Recipes.id == id).first()
     return render_template('delete_recipe.html', recipe=recipe)
-
-@app.route('/submit_recipe', methods=['POST'])
-def submit_recipe():
-    # Todo: Add Recipe Validation
-    recipe = Recipes()
-    recipe.name = request.form.get('recipe_name')
-    recipe.cook_time = request.form.get('recipe_time')
-    recipe.serves = request.form.get('recipe_serves')
-    recipe.desc = request.form.get('recipe_desc')
-    recipe.save()
-
-    # Todo: Fix Image Validation
-    file = request.files['recipe_image']
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        recipe_image = Recipe_Images()
-        recipe_image.recipe = recipe.id
-        recipe_image.filename = filename
-        recipe_image.save()
-
-    # Todo: Add Ingredient Validation
-    for i, ele in enumerate(request.form.getlist('ingredients[]')):
-        ingredient = Ingredients()
-        ingredient.recipe = recipe.id
-        ingredient.position = i
-        ingredient.ingredient = ele
-        ingredient.save()
-    
-    # Todo: Add Instruction Validation
-    for i, ele in enumerate(request.form.getlist('instructions[]')):
-        instruction = Instructions()
-        instruction.recipe = recipe.id
-        instruction.position = i
-        instruction.instruction = ele
-        instruction.save()
-    return redirect('/')
 
 def allowed_file(filename):
     return '.' in filename and \
