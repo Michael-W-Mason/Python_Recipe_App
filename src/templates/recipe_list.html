@@ -6,7 +6,6 @@
         {% for recipe in recipes %}
         <div class="col">
             <div class="card shadow-sm">
-                <h1>{{recipe.image_filename}}</h1>
                 <img class="bd-placeholder-img card-img-top" width="100%" height="225" preserveAspectRatio="xMidYMid slice"
                 {%if recipe.image_filename %}
                 src="{{ url_for('cdn', id=recipe.id, filename=recipe.image_filename) }}"
@@ -22,7 +21,7 @@
                             <button onclick="getRecipe({{recipe.id}})" type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#recipeModal">View</button>
                             <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
                         </div>
-                        <small class="text-body-secondary">{{recipe.cook_time}} hrs</small>
+                        <small class="text-body-secondary">Cook Time: {{recipe.cook_time}} hrs</small>
                     </div>
                 </div>
             </div>

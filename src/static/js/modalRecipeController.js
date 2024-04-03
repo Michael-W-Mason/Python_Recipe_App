@@ -22,7 +22,7 @@ function formatModal(data){
     modalDesc.innerText = data["desc"];
     modalServes.innerText = `Serves: ${data["serves"]} People`;
     modalTime.innerText = `Total Cook Time (hrs): ${data["cook_time"]}`;
-    modalEditLink.setAttribute("href", `/recipes/edit_recipe/${data["id"]}/`);
+    modalEditLink.setAttribute("href", `/recipes/edit_recipe/${data["id"]}`);
     modalImage.setAttribute("src", `/cdn/${data["id"]}/${data['image_filename']}`)
 
     modalIngredients.replaceChildren();

@@ -37,11 +37,12 @@ def submit_recipe():
             os.makedirs(save_path)
         file.save(os.path.join(save_path, filename))
         recipe.image_filename = filename
-        query = recipe.update(image_filename = filename)
-        query.execute()
+        recipe.update(image_filename = filename)
+        recipe.save()
     
     # Todo: Add Ingredient Validation
     for i, ele in enumerate(request.form.getlist('ingredients[]')):
+        print(ele)
         ingredient = Ingredients()
         ingredient.recipe = recipe.id
         ingredient.position = i
@@ -50,6 +51,7 @@ def submit_recipe():
     
     # Todo: Add Instruction Validation
     for i, ele in enumerate(request.form.getlist('instructions[]')):
+        print(ele)
         instruction = Instructions()
         instruction.recipe = recipe.id
         instruction.position = i
@@ -68,21 +70,9 @@ def recipes():
     recipes = Recipes.get_all_recipes()
     return render_template('recipe_list.html', recipes=recipes)
 
-@app.route('/recipes/edit/<id>')
+@app.route('/recipes/edit_recipe/<id>')
 def edit_recipe(id):
-    query_1 = Recipes().select(Recipes.name).where(Recipes.id == id).first()
-    query_2 = Ingredients.select().where(Ingredients.recipe == id).order_by(Ingredients.position)
-    query_3 = Instructions.select().where(Instructions.recipe == id).order_by(Instructions.position)
-
-    recipe = {}
-    recipe['name'] = query_1.name
-    recipe['id'] = id
-    recipe['ingredients'] = []
-    for i, ele  in enumerate(query_2):
-        recipe['ingredients'].append(ele.ingredient)
-    recipe['instructions'] = []
-    for i,ele in enumerate(query_3):
-        recipe['instructions'].append(ele.instruction)
+    recipe = Recipes.get_all_information_for_recipe(id)
     return render_template('recipe_form.html', recipe=recipe)
 
 @app.route('/create_recipe')
