@@ -8,7 +8,6 @@ function getRecipe(id){
 }
 
 function formatModal(data){
-    console.log(data);
     let modalTitle = document.getElementById('recipeModalLabel');
     let modalDesc = document.getElementById('recipeModalDesc');
     let modalServes = document.getElementById('recipeModalServes');
@@ -23,7 +22,7 @@ function formatModal(data){
     modalServes.innerText = `Serves: ${data["serves"]} People`;
     modalTime.innerText = `Total Cook Time (hrs): ${data["cook_time"]}`;
     modalEditLink.setAttribute("href", `/recipes/edit_recipe/${data["id"]}`);
-    modalImage.setAttribute("src", `/cdn/${data["id"]}/${data['image_filename']}`)
+    modalImage.setAttribute("src", `/cdn/${data["id"]}`)
 
     modalIngredients.replaceChildren();
     modalInstructions.replaceChildren();

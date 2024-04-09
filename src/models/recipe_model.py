@@ -12,13 +12,33 @@ class Recipes(BaseModel):
     desc = CharField()
     cook_time = FloatField()
     serves = IntegerField()
-    image_filename = CharField(max_length=255, null=True)
     created_at = TimestampField(default=datetime.now())
     updated_at = TimestampField(default=datetime.now())
 
     @staticmethod
+    def create_recipe(name, desc, cook_time, serves):
+        recipe = Recipes()
+        recipe.name = name
+        recipe.desc = desc
+        recipe.cook_time = cook_time
+        recipe.serves = serves
+        recipe.save()
+        return recipe.id
+
+    @staticmethod
+    def update_recipe_by_id(id, name, desc, cook_time, serves):
+        recipe = Recipes.get_by_id(id)
+        recipe.name = name
+        recipe.desc = desc
+        recipe.cook_time = cook_time
+        recipe.serves = serves
+        recipe.updated_at = datetime.now()
+        recipe.save()
+        return recipe.id
+
+    @staticmethod
     def get_all_recipes():
-        recipes = Recipes.select(Recipes.name, Recipes.id, Recipes.desc, Recipes.cook_time, Recipes.serves, Recipes.image_filename)
+        recipes = Recipes.select(Recipes.name, Recipes.id, Recipes.desc, Recipes.cook_time, Recipes.serves)
         data = []
         for i, ele in enumerate(recipes):
             data.append({
@@ -27,12 +47,11 @@ class Recipes(BaseModel):
                 'desc' : ele.desc,
                 'cook_time' : ele.cook_time,
                 'serves' : ele.serves,
-                'image_filename' : ele.image_filename,
             })
         return data
 
     @staticmethod
-    def get_all_information_for_recipe(id):
+    def get_all_information_for_recipe_by_id(id):
         # Todo: Make this into smaller queries, feel like there is a better way
         recipe = Recipes.select().where(id == Recipes.id).first()
         ingredients = Ingredients.select().where(id == Ingredients.recipe).order_by(Ingredients.position)
@@ -45,7 +64,6 @@ class Recipes(BaseModel):
         data['cook_time'] = recipe.cook_time
         data['serves'] = recipe.serves
         data['created_at'] = recipe.created_at
-        data['image_filename'] = recipe.image_filename
         data['ingredients'] = []
         data['instructions'] = []
         for i, ele in enumerate(ingredients):
@@ -60,8 +78,38 @@ class Ingredients(BaseModel):
     position = IntegerField()
     ingredient = CharField()
 
+    @staticmethod
+    def delete_all_ingredients_by_recipe_id(id):
+        query = Ingredients.delete().where(Ingredients.recipe == id)
+        query.execute()
+        return
+    
+    @staticmethod
+    def insert_ingredient_by_recipe_id(id, data_arr):
+        for i, ele in enumerate(data_arr):
+            ingredient = Ingredients()
+            ingredient.recipe = id
+            ingredient.position = i
+            ingredient.ingredient = ele
+            ingredient.save()
+
 class Instructions(BaseModel):
     id = PrimaryKeyField()
     recipe = ForeignKeyField(Recipes, backref='instructions')
     position = IntegerField()
     instruction = CharField()
+
+    @staticmethod
+    def delete_all_instructions_by_recipe_id(id):
+        query = Instructions.delete().where(Instructions.recipe == id)
+        query.execute()
+        return
+    
+    @staticmethod
+    def insert_instruction_by_recipe_id(id, data_arr):
+        for i, ele in enumerate(data_arr):
+            instruction = Instructions()
+            instruction.recipe = id
+            instruction.position = i
+            instruction.instruction = ele
+            instruction.save()

@@ -8,30 +8,38 @@
             <div class="row">
                 <div class="row g-3 p-2">
                     <div class="col-sm-7">
-                        <label for="recipe_name" class="form-label control-lg">Recipe Name</label>
-                        <input name="recipe_name" class="form-control control-lg" id="recipe_name"
+                        <label for="name" class="form-label control-lg">Recipe Name</label>
+                        <input name="name" class="form-control control-lg" id="name"
                             placeholder="Enter Name" {% if 'id' in recipe %} value="{{recipe.name}}" {% endif %}>
                     </div>
                     <div class="col-sm">
-                        <label for="recipe_time" class="form-label control-lg">Cook Time (hrs)</label>
-                        <input name="recipe_time" type="number" class="form-control control-lg" id="recipe_time"
-                            placeholder="Enter Cook Time" {% if 'id' in recipe %} value="{{recipe.time}}" {% endif %}>
+                        <label for="cook_time" class="form-label control-lg">Cook Time (hrs)</label>
+                        <input name="cook_time" type="number" step="0.25" class="form-control control-lg" id="cook_time"
+                            placeholder="Enter Cook Time" {% if 'id' in recipe %} value="{{recipe.cook_time}}" {% endif %}>
                     </div>
                     <div class="col-sm">
-                        <label for="recipe_serves" class="form-label control-lg">Serves</label>
-                        <input name="recipe_serves" type="number" class="form-control control-lg" id="recipe_serves"
+                        <label for="serves" class="form-label control-lg">Serves</label>
+                        <input name="serves" type="number" class="form-control control-lg" id="serves"
                             placeholder="Enter Amount" {% if 'id' in recipe %} value="{{recipe.serves}}" {% endif %}>
                     </div>
                 </div>
                 <div class="p-2">
-                    <label for="recipe_desc" class="form-label control-lg">Recipe Description</label>
-                    <textarea name="recipe_desc" class="form-control control-lg" id="recipe_desc"
+                    <label for="desc" class="form-label control-lg">Recipe Description</label>
+                    <textarea name="desc" class="form-control control-lg" id="desc"
                         rows="3">{% if 'id' in recipe %}{{recipe.desc}}{% endif %}</textarea>
                 </div>
                 <div class="p-2">
-                    <label for="formFileLg" class="form-label">Recipe Image (Optional)</label>
-                    <input name="recipe_image" class="form-control form-control-md" id="formFileLg" type="file" 
-                    {% if 'id' in recipe %} value="{{recipe.image_filename}}" {% endif %}>
+                    {% if 'id' in recipe %}
+                    <label for="image_filename" class="form-label">Change or Add Image:</label>
+                    {% else %}
+                    <label for="image_filename" class="form-label">Recipe Image (Optional)</label>
+                    {% endif %}
+                    <input name="recipe_image" class="form-control form-control-md" id="image_filename" type="file">
+                </div>
+                <div class="p-2 d-flex justify-content-center">
+                    {% if 'image_filename' in recipe %}
+                        <img class="rounded mx-auto" height="250px" width="50%" src="/cdn/{{recipe.id}}">
+                    {% endif %}
                 </div>
             </div>
             <div class="row mt-2">
