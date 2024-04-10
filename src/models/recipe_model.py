@@ -24,6 +24,11 @@ class Recipes(BaseModel):
         recipe.serves = serves
         recipe.save()
         return recipe.id
+    
+    @staticmethod
+    def delete_recipe_by_id(id):
+        Recipes.delete_by_id(id)
+        return id
 
     @staticmethod
     def update_recipe_by_id(id, name, desc, cook_time, serves):

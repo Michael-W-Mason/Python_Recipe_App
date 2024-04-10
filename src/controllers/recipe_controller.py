@@ -51,6 +51,13 @@ def edit_recipe(id):
 def create_recipe():
     return render_template('recipe_form.html', recipe={})
 
+@app.route('/delete_recipe/<int:id>')
+def delete_recipe(id):
+    Instructions.delete_all_instructions_by_recipe_id(id)
+    Ingredients.delete_all_ingredients_by_recipe_id(id)
+    Recipes.delete_recipe_by_id(id)
+    return redirect('/recipes')
+
 @app.route('/submit_recipe/<int:id>', methods=['POST'])
 def submit_edited_recipe(id):
     # Kind of janky way to do this. Probably a better way to update rather than delete everything and re-insert rows. 
@@ -84,9 +91,7 @@ def cdn(id):
     for path, dirs, images in os.walk(IMAGE_PATH):
         for image in images:
             recipe_id = image.split('.')[0]
-            print(recipe_id, id, image)
             if recipe_id == str(id):
-                print(image)
                 return send_from_directory('../db/images/', image)
     return send_from_directory('../db/images/', 'default.jpg')
 
@@ -100,7 +105,6 @@ def check_if_file_exists_and_delete(recipe_id):
         for image in images:
             if image.split('.')[0] == recipe_id:
                 os.remove(f'{path}/{image}')
-                continue
     return
 
 

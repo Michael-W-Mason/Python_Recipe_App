@@ -9,13 +9,14 @@
                 <div class="row g-3 p-2">
                     <div class="col-sm-7">
                         <label for="name" class="form-label control-lg">Recipe Name</label>
-                        <input name="name" class="form-control control-lg" id="name"
-                            placeholder="Enter Name" {% if 'id' in recipe %} value="{{recipe.name}}" {% endif %}>
+                        <input name="name" class="form-control control-lg" id="name" placeholder="Enter Name" {% if 'id'
+                            in recipe %} value="{{recipe.name}}" {% endif %}>
                     </div>
                     <div class="col-sm">
                         <label for="cook_time" class="form-label control-lg">Cook Time (hrs)</label>
                         <input name="cook_time" type="number" step="0.25" class="form-control control-lg" id="cook_time"
-                            placeholder="Enter Cook Time" {% if 'id' in recipe %} value="{{recipe.cook_time}}" {% endif %}>
+                            placeholder="Enter Cook Time" {% if 'id' in recipe %} value="{{recipe.cook_time}}" {% endif
+                            %}>
                     </div>
                     <div class="col-sm">
                         <label for="serves" class="form-label control-lg">Serves</label>
@@ -38,7 +39,7 @@
                 </div>
                 <div class="p-2 d-flex justify-content-center">
                     {% if 'image_filename' in recipe %}
-                        <img class="rounded mx-auto" height="250px" width="50%" src="/cdn/{{recipe.id}}">
+                    <img class="rounded mx-auto" height="250px" width="50%" src="/cdn/{{recipe.id}}">
                     {% endif %}
                 </div>
             </div>
@@ -97,12 +98,24 @@
                     {% endif %}
                 </button>
                 {% if 'id' in recipe %}
-                <a href="/delete/{{recipe.id}}" class="btn btn-danger">Delete Recipe</a>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target=".bd-example-modal-sm">Delete Recipe</button>
                 {% endif %}
             </div>
     </div>
     </form>
 </div>
+</div>
+
+<!-- Small modal -->
+
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <p>Are you sure you want to delete this recipe?</p>
+            <a href="/delete_recipe/{{recipe.id}}" class="btn btn-danger">Delete Recipe</a>
+        </div>
+    </div>
 </div>
 
 <script src="{{url_for('static', filename='js/buttonController.js')}}"></script>
