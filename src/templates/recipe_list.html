@@ -1,6 +1,9 @@
 {% extends 'default_page_layout.html' %}
 
 {% block content %}
+<div class="container">
+    <input type="text">
+</div>
 <div class="container py-5 bg-body-tertiary">
     <div class="row row-cols-1 row-cols-md-3 row-cols-sm-2 g-4">
         {% for recipe in recipes %}
@@ -19,7 +22,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
                             <button onclick="getRecipe({{recipe.id}})" type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#recipeModal">View</button>
-                            <a class="btn btn-sm btn-outline-secondary" href="/recipes/edit_recipe/{{recipe.id}}">Edit</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="/recipe_app/recipes/edit_recipe/{{recipe.id}}">Edit</a>
                             <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
                         </div>
                         <small class="text-body-secondary">{{recipe.cook_time}} hrs</small>
@@ -58,9 +61,6 @@
                             </ol>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

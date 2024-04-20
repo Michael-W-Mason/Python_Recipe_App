@@ -3,7 +3,7 @@
 {% block content %}
 <div class="bg-body-tertiary py-2">
     <div class="py-2 container">
-        <form {% if 'id' in recipe %} action="/submit_recipe/{{recipe.id}}" {% else %} action="/submit_recipe" {% endif
+        <form {% if 'id' in recipe %} action="/recipe_app/submit_recipe/{{recipe.id}}" {% else %} action="/recipe_app/submit_recipe" {% endif
             %} method="post" id="recipe_form" enctype="multipart/form-data">
             <div class="row">
                 <div class="row g-3 p-2">
@@ -39,7 +39,7 @@
                 </div>
                 <div class="p-2 d-flex justify-content-center">
                     {% if 'image_filename' in recipe %}
-                    <img class="rounded mx-auto" height="250px" width="50%" src="/cdn/{{recipe.id}}">
+                    <img class="rounded mx-auto" height="250px" width="50%" src="/recipe_app/cdn/{{recipe.id}}">
                     {% endif %}
                 </div>
             </div>
@@ -113,7 +113,7 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <p>Are you sure you want to delete this recipe?</p>
-            <a href="/delete_recipe/{{recipe.id}}" class="btn btn-danger">Delete Recipe</a>
+            <a href="/recipe_app/delete_recipe/{{recipe.id}}" class="btn btn-danger">Delete Recipe</a>
         </div>
     </div>
 </div>

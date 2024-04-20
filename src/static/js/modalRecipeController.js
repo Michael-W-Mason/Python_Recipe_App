@@ -1,5 +1,5 @@
 function getRecipe(id){
-    fetch('http://localhost:5000/recipes/' + id)
+    fetch('http://localhost:5000/recipe_app/recipes/' + id)
     .then(res => res.json())
     .then(data => {
         formatModal(data.data)
@@ -20,7 +20,7 @@ function formatModal(data){
     modalDesc.innerText = data["desc"];
     modalServes.innerText = `Serves: ${data["serves"]} People`;
     modalTime.innerText = `Total Cook Time (hrs): ${data["cook_time"]}`;
-    modalImage.setAttribute("src", `/cdn/${data["id"]}`)
+    modalImage.setAttribute("src", `/recipe_app/cdn/${data["id"]}`)
 
     modalIngredients.replaceChildren();
     modalInstructions.replaceChildren();

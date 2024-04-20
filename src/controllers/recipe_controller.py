@@ -7,12 +7,12 @@ from src.models.recipe_model import Recipes, Ingredients, Instructions
 ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg', 'gif'}
 IMAGE_PATH = f'./db/images/'
 
-@app.route('/')
+@app.route('/recipe_app')
 def home():
     recipes = Recipes.get_last_n_recipes(3)
     return render_template('home.html', recipes=recipes)
 
-@app.route('/submit_recipe', methods=['POST'])
+@app.route('/recipe_app/submit_recipe', methods=['POST'])
 def submit_recipe():
     # Todo: Add Recipe Validation
     recipe_id = Recipes.create_recipe(
@@ -31,35 +31,35 @@ def submit_recipe():
     # Todo: Add Instruction Validation
     Instructions.insert_instruction_by_recipe_id(recipe_id, request.form.getlist('instructions[]'))    
 
-    return redirect('/recipes')
+    return redirect('/recipe_app/recipes')
 
-@app.route('/recipes/<int:id>')
+@app.route('/recipe_app/recipes/<int:id>')
 def one_recipe(id):
     recipe = Recipes.get_all_information_for_recipe_by_id(id)
     return jsonify(data = recipe)
 
-@app.route('/recipes')
+@app.route('/recipe_app/recipes')
 def recipes():
     recipes = Recipes.get_all_recipes()
     return render_template('recipe_list.html', recipes=recipes)
 
-@app.route('/recipes/edit_recipe/<int:id>')
+@app.route('/recipe_app/recipes/edit_recipe/<int:id>')
 def edit_recipe(id):
     recipe = Recipes.get_all_information_for_recipe_by_id(id)
     return render_template('recipe_form.html', recipe=recipe)
 
-@app.route('/create_recipe')
+@app.route('/recipe_app/create_recipe')
 def create_recipe():
     return render_template('recipe_form.html', recipe={})
 
-@app.route('/delete_recipe/<int:id>')
+@app.route('/recipe_app/delete_recipe/<int:id>')
 def delete_recipe(id):
     Instructions.delete_all_instructions_by_recipe_id(id)
     Ingredients.delete_all_ingredients_by_recipe_id(id)
     Recipes.delete_recipe_by_id(id)
     return redirect('/recipes')
 
-@app.route('/submit_recipe/<int:id>', methods=['POST'])
+@app.route('/recipe_app/submit_recipe/<int:id>', methods=['POST'])
 def submit_edited_recipe(id):
     # Kind of janky way to do this. Probably a better way to update rather than delete everything and re-insert rows. 
     Ingredients.delete_all_ingredients_by_recipe_id(id)
@@ -81,9 +81,9 @@ def submit_edited_recipe(id):
     Ingredients.insert_ingredient_by_recipe_id(id, request.form.getlist('ingredients[]'))
     Instructions.insert_instruction_by_recipe_id(id, request.form.getlist('instructions[]'))
 
-    return redirect(f'/recipes')
+    return redirect(f'/recipe_app/recipes')
 
-@app.route('/cdn/<int:id>')
+@app.route('/recipe_app/cdn/<int:id>')
 def cdn(id):
     # Probably a better way to do this? Probably store file extension or filename in db?
     # Hard to deal with multiple allowed file extensions, could turn all uploaded images to jpeg???
