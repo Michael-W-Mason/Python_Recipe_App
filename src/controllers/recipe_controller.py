@@ -9,7 +9,8 @@ IMAGE_PATH = f'./db/images/'
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    recipes = Recipes.get_last_n_recipes(3)
+    return render_template('home.html', recipes=recipes)
 
 @app.route('/submit_recipe', methods=['POST'])
 def submit_recipe():

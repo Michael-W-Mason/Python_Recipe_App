@@ -76,6 +76,11 @@ class Recipes(BaseModel):
         for i, ele in enumerate(instructions):
             data['instructions'].append(ele.instruction)   
         return data
+    
+    @staticmethod
+    def get_last_n_recipes(n):
+        last_n_recipes = Recipes.select().order_by(Recipes.updated_at).limit(n)
+        return last_n_recipes
 
 class Ingredients(BaseModel):
     id = PrimaryKeyField()

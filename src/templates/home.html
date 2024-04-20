@@ -18,80 +18,71 @@
 
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
+        <h4 class="row">View Our Most Recent Additions</h4>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for recipe in recipes %}
             <div class="col">
                 <div class="card shadow-sm">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#55595c" data-darkreader-inline-fill=""
-                            style="--darkreader-inline-fill: #43484b;"></rect>
-                        <text x="50%" y="50%" fill="#eceeef" dy=".3em" data-darkreader-inline-fill=""
-                            style="--darkreader-inline-fill: #dddad6;">Thumbnail</text>
-                    </svg>
+                    <img class="bd-placeholder-img card-img-top" width="100%" height="225"
+                        preserveAspectRatio="xMidYMid slice" {%if recipe.id %} src="{{ url_for('cdn', id=recipe.id) }}"
+                        {% else %} src="{{url_for('cdn', id=0)}}" {% endif %}>
                     <div class="card-body">
-                        <p class="card-text">This is a wider card with supporting text below as a natural
-                            lead-in to additional content. This content is a little bit longer.</p>
+                        <h5>{{recipe.name}}</h5>
+                        <p class="card-text">{{recipe.desc}}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                <button onclick="getRecipe({{recipe.id}})" type="button"
+                                    class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#recipeModal">View</button>
+                                <a class="btn btn-sm btn-outline-secondary"
+                                    href="/recipes/edit_recipe/{{recipe.id}}">Edit</a>
+                                <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
                             </div>
-                            <small class="text-body-secondary">9 mins</small>
+                            <small class="text-body-secondary">{{recipe.cook_time}} hrs</small>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="card shadow-sm">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#55595c" data-darkreader-inline-fill=""
-                            style="--darkreader-inline-fill: #43484b;"></rect>
-                        <text x="50%" y="50%" fill="#eceeef" dy=".3em" data-darkreader-inline-fill=""
-                            style="--darkreader-inline-fill: #dddad6;">Thumbnail</text>
-                    </svg>
-                    <div class="card-body">
-                        <p class="card-text">This is a wider card with supporting text below as a natural
-                            lead-in to additional content. This content is a little bit longer.</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                            </div>
-                            <small class="text-body-secondary">9 mins</small>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade modal-md" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="recipeModalLabel">Recipe Name</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="p-2">
+                    <div class="row">
+                        <div class="clearfix p-2">
+                            <img id="recipeModalImage" class="rounded col-md-4 mb-3 ms-md-3" width="100%" src="">
+                            <h5 id="recipeModalServes">Serves: 1</h5>
+                            <p id="recipeModalTime">Total Cooking Time: 1 hours</p>
+                            <p id="recipeModalDesc">Recipe Description</p>
+                        </div>
+                        <div class="p-2">
+                            <h3>Ingredients</h3>
+                            <ul id="recipeModalIngredients">
+                            </ul>
+                            <h3>Instructions</h3>
+                            <ol id="recipeModalInstructions">
+                            </ol>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="card shadow-sm">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#55595c" data-darkreader-inline-fill=""
-                            style="--darkreader-inline-fill: #43484b;"></rect>
-                        <text x="50%" y="50%" fill="#eceeef" dy=".3em" data-darkreader-inline-fill=""
-                            style="--darkreader-inline-fill: #dddad6;">Thumbnail</text>
-                    </svg>
-                    <div class="card-body">
-                        <p class="card-text">This is a wider card with supporting text below as a natural
-                            lead-in to additional content. This content is a little bit longer.</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                            </div>
-                            <small class="text-body-secondary">9 mins</small>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+
+
+
+    <script src="{{url_for('static', filename='js/modalRecipeController.js')}}"></script>
+    {% endblock %}
