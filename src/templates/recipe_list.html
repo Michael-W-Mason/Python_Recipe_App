@@ -1,28 +1,32 @@
 {% extends 'default_page_layout.html' %}
 
 {% block content %}
-<div class="container">
-    <input type="text">
-</div>
-<div class="container py-5 bg-body-tertiary">
+<div class="container bg-body-tertiary">
+    <div class="py-5 d-flex justify-content-center">
+        <form action="#">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search For Recipe" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+            </div>
+        </form>
+    </div>
     <div class="row row-cols-1 row-cols-md-3 row-cols-sm-2 g-4">
         {% for recipe in recipes %}
         <div class="col">
             <div class="card shadow-sm">
-                <img class="bd-placeholder-img card-img-top" width="100%" height="225" preserveAspectRatio="xMidYMid slice"
-                {%if recipe.id %}
-                src="{{ url_for('cdn', id=recipe.id) }}"
-                {% else %}
-                src="{{url_for('cdn', id=0)}}"
-                {% endif %}
-                >
+                <img class="bd-placeholder-img card-img-top" width="100%" height="225"
+                    preserveAspectRatio="xMidYMid slice" {%if recipe.id %} src="{{ url_for('cdn', id=recipe.id) }}" {%
+                    else %} src="{{url_for('cdn', id=0)}}" {% endif %}>
                 <div class="card-body">
                     <h5>{{recipe.name}}</h5>
                     <p class="card-text">{{recipe.desc}}</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
-                            <button onclick="getRecipe({{recipe.id}})" type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#recipeModal">View</button>
-                            <a class="btn btn-sm btn-outline-secondary" href="/recipe_app/recipes/edit_recipe/{{recipe.id}}">Edit</a>
+                            <button onclick="getRecipe({{recipe.id}})" type="button"
+                                class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                                data-bs-target="#recipeModal">View</button>
+                            <a class="btn btn-sm btn-outline-secondary"
+                                href="/recipe_app/recipes/edit_recipe/{{recipe.id}}">Edit</a>
                             <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
                         </div>
                         <small class="text-body-secondary">{{recipe.cook_time}} hrs</small>
@@ -32,6 +36,23 @@
         </div>
         {% endfor %}
     </div>
+    <nav class="py-5 d-flex justify-content-center" aria-label="navigation">
+        <ul class="pagination">
+            {%if page == 1%}
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/1">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/1">1</a></li>
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/2">2</a></li>
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/3">3</a></li>
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/{{page + 1}}">Next</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/{{page - 1}}">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/{{page - 1}}">{{page - 1}}</a></li>
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/{{page}}">{{page}}</a></li>
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/{{page + 1}}">{{page + 1}}</a></li>
+            <li class="page-item"><a class="page-link" href="/recipe_app/recipes/{{page + 1}}">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 
 <!-- Modal -->
@@ -46,10 +67,9 @@
                 <div class="p-2">
                     <div class="row">
                         <div class="clearfix p-2">
-                            <img id="recipeModalImage" class="rounded col-md-4 mb-3 ms-md-3" width="100%"
-                                src="">
-                                <h5 id="recipeModalServes">Serves: 1</h5>
-                                <p id="recipeModalTime">Total Cooking Time: 1 hours</p>
+                            <img id="recipeModalImage" class="rounded col-md-4 mb-3 ms-md-3" width="100%" src="">
+                            <h5 id="recipeModalServes">Serves: 1</h5>
+                            <p id="recipeModalTime">Total Cooking Time: 1 hours</p>
                             <p id="recipeModalDesc">Recipe Description</p>
                         </div>
                         <div class="p-2">

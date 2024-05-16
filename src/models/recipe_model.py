@@ -54,6 +54,20 @@ class Recipes(BaseModel):
                 'serves' : ele.serves,
             })
         return data
+    
+    @staticmethod
+    def paginate_recipes(page = 0):
+        recipes = Recipes.select(Recipes.name, Recipes.id, Recipes.desc, Recipes.cook_time, Recipes.serves).paginate(page)
+        data = []
+        for i,ele in enumerate(recipes):
+            data.append({
+                'id' : ele.id,
+                'name' : ele.name,
+                'desc' : ele.desc,
+                'cook_time' : ele.cook_time,
+                'serves' : ele.serves,
+            })
+        return data
 
     @staticmethod
     def get_all_information_for_recipe_by_id(id):
@@ -79,7 +93,7 @@ class Recipes(BaseModel):
     
     @staticmethod
     def get_last_n_recipes(n):
-        last_n_recipes = Recipes.select().order_by(Recipes.updated_at).limit(n)
+        last_n_recipes = Recipes.select().order_by(-Recipes.id).limit(n)
         return last_n_recipes
 
 class Ingredients(BaseModel):

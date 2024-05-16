@@ -7,10 +7,17 @@ from src.models.recipe_model import Recipes, Ingredients, Instructions
 ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg', 'gif'}
 IMAGE_PATH = f'./db/images/'
 
-@app.route('/recipe_app')
+@app.route('/recipe_app/')
 def home():
     recipes = Recipes.get_last_n_recipes(3)
     return render_template('home.html', recipes=recipes)
+
+@app.route('/recipe_app/recipes/')
+@app.route('/recipe_app/recipes/<int:page>')
+def recipes(page = 1):
+    recipes = Recipes.paginate_recipes(page)
+    return render_template('recipe_list.html', recipes=recipes, page=page)
+
 
 @app.route('/recipe_app/submit_recipe', methods=['POST'])
 def submit_recipe():
@@ -38,10 +45,6 @@ def one_recipe(id):
     recipe = Recipes.get_all_information_for_recipe_by_id(id)
     return jsonify(data = recipe)
 
-@app.route('/recipe_app/recipes')
-def recipes():
-    recipes = Recipes.get_all_recipes()
-    return render_template('recipe_list.html', recipes=recipes)
 
 @app.route('/recipe_app/recipes/edit_recipe/<int:id>')
 def edit_recipe(id):
