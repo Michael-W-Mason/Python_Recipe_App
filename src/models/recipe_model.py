@@ -68,6 +68,11 @@ class Recipes(BaseModel):
                 'serves' : ele.serves,
             })
         return data
+    
+    @staticmethod
+    def search_recipes(query = '', page = 0):
+        recipes = Recipes.select(Recipes.name, Recipes.id, Recipes.desc, Recipes.cook_time, Recipes.serves).where(Recipes.name.contains(query)).paginate(page)
+        return recipes
 
     @staticmethod
     def get_all_information_for_recipe_by_id(id):

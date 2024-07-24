@@ -18,6 +18,13 @@ def recipes(page = 1):
     recipes = Recipes.paginate_recipes(page)
     return render_template('recipe_list.html', recipes=recipes, page=page)
 
+@app.route('/recipe_app/recipes/search', methods=['POST'])
+def search_recipes(page = 1):
+    query = request.form.get('search')
+    recipes = Recipes.search_recipes(query=query)
+    if query == '':
+        return redirect('/recipe_app/recipes')
+    return render_template('recipe_list.html', recipes=recipes, page=page)
 
 @app.route('/recipe_app/submit_recipe', methods=['POST'])
 def submit_recipe():
@@ -40,7 +47,7 @@ def submit_recipe():
 
     return redirect('/recipe_app/recipes')
 
-@app.route('/recipe_app/recipes/<int:id>')
+@app.route('/recipe_app/recipes/get_recipe/<int:id>')
 def one_recipe(id):
     recipe = Recipes.get_all_information_for_recipe_by_id(id)
     return jsonify(data = recipe)

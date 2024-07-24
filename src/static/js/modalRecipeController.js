@@ -1,5 +1,5 @@
 function getRecipe(id){
-    fetch('http://localhost:5000/recipe_app/recipes/' + id)
+    fetch('http://localhost:5000/recipe_app/recipes/get_recipe/' + id)
     .then(res => res.json())
     .then(data => {
         formatModal(data.data)
